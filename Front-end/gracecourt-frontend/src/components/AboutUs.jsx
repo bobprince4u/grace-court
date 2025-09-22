@@ -27,12 +27,6 @@ const ABOUT_DATA = [
   },
 ];
 
-/**
- * AboutUs Component - Production Ready
- *
- * Displays company mission, vision, and values in a responsive card layout.
- * Maintains exact original design while adding production-ready features.
- */
 const AboutUs = memo(() => {
   // Memoize the aboutData to prevent unnecessary recalculations
   const aboutData = useMemo(() => ABOUT_DATA, []);

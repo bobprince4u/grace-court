@@ -170,7 +170,7 @@ const Navbar = () => {
                           : "hover:text-red-500"
                       }`
                     }
-                    onClick={() => setIsOpen(false)} // ✅ close mobile menu
+                    onClick={() => setIsOpen(false)}
                   >
                     {link.label}
                   </NavLink>

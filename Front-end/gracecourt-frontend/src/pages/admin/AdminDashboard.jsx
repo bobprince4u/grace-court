@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Properties from "/src/components/admin/Properties";
 import Testimonials from "/src/components/admin/Testimonials";
 import MessagesTable from "/src/components/admin/MessagesTable";
-import UserManagement from "/src/components/admin/UserManagement";
 import DashboardOverview from "/src/components/admin/DashboardOverview";
 import {
   Home,
@@ -154,13 +153,11 @@ export default function AdminDashboard() {
           {activeSection === "properties" && <Properties />}
           {activeSection === "messages" && <MessagesTable />}
           {activeSection === "testimonials" && <Testimonials />}
-          {activeSection === "users" && <UserManagement />}
 
           {activeSection !== "dashboard" &&
             activeSection !== "properties" &&
             activeSection !== "messages" &&
-            activeSection !== "testimonials" &&
-            activeSection !== "users" && (
+            activeSection !== "testimonials" && (
               <div className="text-slate-500 mt-6">
                 <h2 className="text-xl font-bold mb-2 capitalize">
                   {activeSection}

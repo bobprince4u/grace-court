@@ -16,7 +16,7 @@ const s3 = new S3Client({
 async function uploadToS3(file) {
   const fileName = `${uuidv4()}-${file.originalname}`;
   const params = {
-    Bucket: process.env.AWS_S3_BUCKET, // <-- ensure this matches your .env
+    Bucket: process.env.AWS_S3_BUCKET,
     Key: fileName,
     Body: file.buffer,
     ContentType: file.mimetype,

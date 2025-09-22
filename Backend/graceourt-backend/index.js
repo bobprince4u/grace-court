@@ -7,7 +7,6 @@ const mongoose = require("mongoose");
 //routes
 const authRouter = require("./routers/authRouter");
 const propertyRoutes = require("./routers/propertyRoutes");
-const bookingRoutes = require("./routers/bookingRoutes");
 const testimonialRoutes = require("./routers/testimonialRoutes");
 const messageRoutes = require("./routers/messageRoutes");
 
@@ -36,7 +35,6 @@ app.use("/api/properties/:id/images", propertyRoutes);
 app.use("/api/properties/update/:id", propertyRoutes);
 app.use("/api/searchProperties", propertyRoutes);
 
-app.use("/api/bookings", bookingRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/testimonials/:id", testimonialRoutes);
 app.use("/api/testimonials/:id/delete", testimonialRoutes);

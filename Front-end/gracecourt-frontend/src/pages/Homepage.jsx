@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Hero from "../components/Hero";
 import PropertyList from "../components/PropertyList";
-//import PropertiesData from "../assets/PropertiesData";
 import FeaturedServices from "../components/FeaturedServices";
 import Availability from "../components/Availability";
 import FeaturedTestimonial from "../components/FeaturedTestimonial";

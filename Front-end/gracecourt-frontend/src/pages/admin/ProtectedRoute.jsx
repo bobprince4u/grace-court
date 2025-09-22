@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import AdminAuth from "/src/components/admin/AdminAuth"; // import your login/signup form
+import AdminAuth from "/src/components/admin/AdminAuth";
 
 export default function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");

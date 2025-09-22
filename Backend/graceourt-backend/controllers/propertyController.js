@@ -5,23 +5,6 @@ const { uploadToS3 } = require("../utils/s3");
 
 exports.createProperty = async (req, res) => {
   try {
-    console.log("=== POSTMAN DEBUG ===");
-    console.log("Headers:", req.headers);
-    console.log("Content-Type:", req.headers["content-type"]);
-    console.log("req.files:", req.files);
-    console.log("req.files length:", req.files?.length || 0);
-    console.log("req.body:", req.body);
-    console.log("Environment variables:");
-    console.log("- AWS_S3_BUCKET:", process.env.AWS_S3_BUCKET);
-    console.log("- AWS_REGION:", process.env.AWS_REGION);
-    console.log(
-      "- AWS_ACCESS_KEY_ID:",
-      process.env.AWS_ACCESS_KEY_ID ? "SET" : "NOT SET"
-    );
-    console.log(
-      "- AWS_SECRET_ACCESS_KEY:",
-      process.env.AWS_SECRET_ACCESS_KEY ? "SET" : "NOT SET"
-    );
     const { name, location, rooms, amenities, description } = req.body;
 
     // 1. Validate required fields
@@ -42,9 +25,7 @@ exports.createProperty = async (req, res) => {
       const uploadPromises = req.files.map((file) => uploadToS3(file));
       const uploadResults = await Promise.all(uploadPromises);
 
-      // Make sure we map to actual URL strings
       imageUrls = uploadResults.map((result) => {
-        // Adjust based on what uploadToS3 returns
         if (typeof result === "string") return result;
         if (result.Location) return result.Location;
         if (result.url) return result.url; // Custom return
@@ -68,7 +49,7 @@ exports.createProperty = async (req, res) => {
       rooms: Number(rooms),
       amenities: normalizedAmenities,
       description: description,
-      propertyImage: imageUrls, // <-- must match schema field name
+      propertyImage: imageUrls,
     });
 
     const savedProperty = await newProperty.save();
@@ -92,7 +73,6 @@ exports.createProperty = async (req, res) => {
 //GET all properties
 exports.getAllProperties = async (req, res) => {
   try {
-    // Only basic info: you can select only certain fields if you like
     const properties = await Property.find(
       {},
       "name location rooms propertyImage status"
@@ -111,7 +91,7 @@ exports.getAllProperties = async (req, res) => {
     });
   }
 };
-// Replace your getPropertyById function with this debug version
+
 exports.getPropertyById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -162,7 +142,6 @@ exports.getPropertyById = async (req, res) => {
 };
 
 //Update a property by ID
-// Add/Fix your updateProperty controller function
 exports.updateProperty = async (req, res) => {
   try {
     const { id } = req.params;
@@ -345,7 +324,6 @@ exports.deleteProperty = async (req, res) => {
         await deleteFromS3(property.propertyImage);
       } catch (s3Err) {
         console.error("S3 cleanup failed:", s3Err);
-        // You can choose to continue even if S3 cleanup fails
       }
     }
 
@@ -433,9 +411,9 @@ exports.searchProperties = async (req, res) => {
 
     // Step 1: Find properties in the location that meet guest capacity
     const properties = await Property.find({
-      location: { $regex: new RegExp(location, "i") }, // ✅ case-insensitive
+      location: { $regex: new RegExp(location, "i") },
       status: "active",
-      rooms: { $gte: guests }, // ✅ ensure enough rooms/guest capacity
+      rooms: { $gte: guests },
     });
 
     if (!properties.length) {

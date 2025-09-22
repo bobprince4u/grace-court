@@ -10,9 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
 import TestimonialCard from "./TestimonialCard";
 
-/* ============================
-   Custom Hook: useTestimonials
-   ============================ */
+/* Custom Hook: useTestimonials */
 const useTestimonials = (apiEndpoint, onError, maxRetries = 3) => {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -149,9 +147,7 @@ const useTestimonials = (apiEndpoint, onError, maxRetries = 3) => {
   return { testimonials, loading, error, retryCount, refetch, maxRetries };
 };
 
-/* ============================
-   Main Component
-   ============================ */
+/* Main Component */
 const FeaturedTestimonial = ({
   itemsPerPage = 3,
   autoplayInterval = 5000,
@@ -257,9 +253,7 @@ const FeaturedTestimonial = ({
     [nextPage, prevPage, isPaused]
   );
 
-  /* ============================
-     States
-     ============================ */
+  /* States */
 
   if (loading && testimonials.length === 0) {
     return (
@@ -308,9 +302,7 @@ const FeaturedTestimonial = ({
     );
   }
 
-  /* ============================
-     Main Carousel
-     ============================ */
+  /* Main Carousel */
   return (
     <section
       className={`relative w-full flex flex-col items-center bg-gradient-to-b from-gray-50 to-white py-12 mt-16 ${className}`}

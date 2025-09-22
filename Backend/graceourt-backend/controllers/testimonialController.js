@@ -41,7 +41,7 @@ exports.createTestimonial = async (req, res) => {
       name,
       message,
       image: imageUrl || null,
-      approved: false, // admin will approve later
+      approved: false,
       hidden: false,
     });
 
@@ -73,7 +73,7 @@ exports.getTestimonials = async (req, res) => {
         _id: t._id,
         name: t.name,
         message: t.message,
-        image: t.image || null, // <-- image included
+        image: t.image || null,
         approved: t.approved,
         hidden: t.hidden,
         createdAt: t.createdAt,
@@ -89,8 +89,8 @@ exports.getTestimonials = async (req, res) => {
   }
 };
 
-/**
- * Approve a testimonial
+/*
+  Approve a testimonial
  */
 exports.approveTestimonial = async (req, res) => {
   try {
@@ -124,8 +124,8 @@ exports.approveTestimonial = async (req, res) => {
   }
 };
 
-/**
- * Delete a testimonial
+/*
+  Delete a testimonial
  */
 exports.deleteTestimonial = async (req, res) => {
   try {

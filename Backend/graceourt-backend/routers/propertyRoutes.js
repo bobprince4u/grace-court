@@ -21,11 +21,6 @@ router.patch(
   upload.array("propertyImage", 10),
   propertyController.patchProperty
 );
-router.post(
-  "/:id/images",
-  upload.array("propertyImage", 10), // allow up to 10 images
-  propertyController.uploadPropertyImages
-);
 
 router.get("/", propertyController.getAllProperties);
 router.get("/:id", propertyController.getPropertyById);

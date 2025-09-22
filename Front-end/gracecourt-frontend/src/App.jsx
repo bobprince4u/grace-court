@@ -5,7 +5,7 @@ import Homepage from "./pages/Homepage";
 import TermsAndConditions from "./pages/Terms&Conditions";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import PropertyDetailPage from "./components/properties/PropertyDetailPage";
-import ProtectedRoute from "./pages/admin/ProtectedRoute"; // ✅ import it
+import ProtectedRoute from "./pages/admin/ProtectedRoute";
 
 const App = () => {
   const location = useLocation();

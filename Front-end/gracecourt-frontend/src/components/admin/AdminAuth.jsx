@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // for redirect
-import { motion, AnimatePresence } from "framer-motion"; // animations
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import adminImg from "../../assets/adminImg.webp";
 import logo from "../../assets/logo.png";
 

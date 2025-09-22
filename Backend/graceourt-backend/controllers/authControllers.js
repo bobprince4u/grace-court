@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { signupSchema, signinSchema } = require("../middleware/validator");
 const { doHash, doHashValidation } = require("../utils/hashing");
-const User = require("../models/usersModel"); // <-- import your User model
+const User = require("../models/usersModel");
 
 exports.signup = async (req, res) => {
   try {
@@ -79,7 +79,7 @@ exports.signin = async (req, res) => {
       });
     }
 
-    // Sign token (include role if you use RBAC)
+    // Sign token
     const token = jwt.sign(
       {
         id: existingUser._id,
@@ -110,7 +110,7 @@ exports.signin = async (req, res) => {
         },
       });
   } catch (error) {
-    console.error(error); // <-- don’t swallow errors
+    console.error(error);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };

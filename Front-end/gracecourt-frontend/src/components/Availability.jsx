@@ -31,7 +31,7 @@ const BookingCalendar = ({
   };
 
   // Fetch availability data from backend
-  const fetchAvailability = async (year, month) => {
+  const fetchAvailability = React.useCallback(async (year, month) => {
     try {
       setIsLoading(true);
 
@@ -50,7 +50,7 @@ const BookingCalendar = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   // Submit booking to backend
   const submitBooking = async (bookingData) => {
@@ -88,7 +88,7 @@ const BookingCalendar = ({
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     fetchAvailability(year, month);
-  }, [currentDate]);
+  }, [currentDate, fetchAvailability]);
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
