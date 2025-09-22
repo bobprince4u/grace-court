@@ -1,45 +1,5 @@
-/*import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import React from "react";
 
-const PropertyCard = ({ images = [], title, subtitle }) => {
-  return (
-    <div className="bg-white rounded-xl shadow p-4">
-      <div className="mb-3">
-        {images.length > 0 ? (
-          <Swiper
-            modules={[Navigation, Pagination]}
-            spaceBetween={10}
-            slidesPerView={1}
-            pagination={{ clickable: true }}
-            navigation
-          >
-            {images.map((img, idx) => (
-              <SwiperSlide key={idx}>
-                <img
-                  src={img}
-                  alt={title}
-                  className="w-full h-48 object-cover rounded"
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        ) : (
-          <div className="w-full h-48 bg-gray-200 rounded flex items-center justify-center text-gray-500">
-            No Image
-          </div>
-        )}
-      </div>
-      <h3 className="font-bold">{title}</h3>
-      <p className="text-sm text-gray-500">{subtitle}</p>
-    </div>
-  );
-};
-
-export default PropertyCard;
-*/
 const PropertyCard = ({ images = [], title, subtitle }) => {
   const image = images.length > 0 ? images[0] : null;
 

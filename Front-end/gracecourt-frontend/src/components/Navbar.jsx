@@ -64,7 +64,7 @@ const Navbar = () => {
           target.scrollIntoView({ behavior: "smooth" });
         }
       }
-      setIsOpen(false); // ✅ close mobile menu after click
+      setIsOpen(false); // close mobile menu after click
     }
   };
 
@@ -78,7 +78,10 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
         {/* Logo */}
-        <h1 className="text-2xl font-bold bg-[url('/src/assets/logo.png')] bg-no-repeat bg-contain w-32 h-10"></h1>
+        <h1
+          onClick={() => navigate("/")}
+          className=" cursor-pointer text-2xl font-bold bg-[url('/src/assets/logo.png')] bg-no-repeat bg-contain w-32 h-10"
+        ></h1>
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-8 font-medium relative mx-auto">
@@ -121,12 +124,14 @@ const Navbar = () => {
         </ul>
 
         {/* Book Now Button */}
-        <button
-          onClick={(e) => handleNavClick(e, "#booking")}
+        <a
+          href="https://www.airbnb.com/rooms/1505635273816946738?guests=1&adults=1&s=67&unique_share_id=aaaf586f-9948-467e-9701-49f55584656d&source_impression_id=p3_1758546335_P3KIr6GNjBjtmBRf"
+          target="_blank"
+          rel="noopener noreferrer"
           className="hidden md:block bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg shadow-md transition"
         >
           Book Now
-        </button>
+        </a>
 
         {/* Mobile Menu Button */}
         <button

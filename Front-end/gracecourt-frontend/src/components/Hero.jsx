@@ -11,11 +11,74 @@ import {
   AlertCircle,
 } from "lucide-react";
 
+// Loading skeleton component for Hero
+const HeroSkeleton = () => (
+  <section className="relative min-h-[100vh] sm:min-h-[92vh] w-full overflow-hidden bg-gray-300 animate-pulse">
+    <div className="absolute inset-0 bg-gray-400" />
+
+    {/* Skeleton for centered text */}
+    <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28 md:pt-36 text-center">
+      <div className="bg-gray-400 h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 w-full max-w-2xl mx-auto rounded-lg mb-4"></div>
+      <div className="space-y-2">
+        <div className="bg-gray-400 h-4 sm:h-5 w-full max-w-3xl mx-auto rounded"></div>
+        <div className="bg-gray-400 h-4 sm:h-5 w-5/6 mx-auto rounded"></div>
+        <div className="bg-gray-400 h-4 sm:h-5 w-4/6 mx-auto rounded"></div>
+      </div>
+    </div>
+
+    {/* Skeleton for search form */}
+    <div
+      className="
+      absolute left-1/2 -translate-x-1/2 
+      bottom-4 sm:bottom-8 md:bottom-12 lg:bottom-20
+      w-[95%] sm:w-[92%] md:w-[90%] lg:w-[85%] xl:w-[80%]
+      max-w-7xl
+      bg-gray-200 
+      rounded-xl sm:rounded-2xl shadow-2xl
+      px-3 sm:px-4 md:px-6 lg:px-10 
+      py-4 sm:py-6 md:py-8
+    "
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
+        {/* Location skeleton */}
+        <div className="flex flex-col col-span-1 sm:col-span-1 lg:col-span-1">
+          <div className="bg-gray-300 h-4 sm:h-5 w-20 rounded mb-1 sm:mb-2"></div>
+          <div className="bg-gray-100 rounded-lg py-2 sm:py-3 px-2 sm:px-3 h-10 sm:h-12"></div>
+        </div>
+
+        {/* Check-In skeleton */}
+        <div className="flex flex-col col-span-1 sm:col-span-1 lg:col-span-1">
+          <div className="bg-gray-300 h-4 sm:h-5 w-16 rounded mb-1 sm:mb-2"></div>
+          <div className="bg-gray-100 rounded-lg py-2 sm:py-3 px-2 sm:px-3 h-10 sm:h-12"></div>
+        </div>
+
+        {/* Check-Out skeleton */}
+        <div className="flex flex-col col-span-1 sm:col-span-1 lg:col-span-1">
+          <div className="bg-gray-300 h-4 sm:h-5 w-18 rounded mb-1 sm:mb-2"></div>
+          <div className="bg-gray-100 rounded-lg py-2 sm:py-3 px-2 sm:px-3 h-10 sm:h-12"></div>
+        </div>
+
+        {/* Guests skeleton */}
+        <div className="flex flex-col col-span-1 sm:col-span-1 lg:col-span-1">
+          <div className="bg-gray-300 h-4 sm:h-5 w-12 rounded mb-1 sm:mb-2"></div>
+          <div className="bg-gray-100 rounded-lg py-2 sm:py-3 px-2 sm:px-3 h-10 sm:h-12"></div>
+        </div>
+
+        {/* Submit button skeleton */}
+        <div className="flex flex-col justify-end col-span-1 sm:col-span-2 lg:col-span-1">
+          <div className="bg-gray-300 rounded-full h-11 sm:h-12 w-full"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
 const Hero = ({
   backgroundImage = "/src/assets/background-img.webp",
   title = "Luxury Short-Let Accommodation",
   subtitle = "At Gracecourt, we offer luxury short-let apartments designed for style, comfort, and convenience. Whether it's a weekend escape or an extended stay, enjoy upscale amenities, spacious interiors, and prime locations. Discover why smart travellers choose Gracecourt, your home away from home.",
   onSearch,
+  isLoading = false, // Add loading prop
 }) => {
   const today = useMemo(() => new Date().toISOString().split("T")[0], []);
   const [form, setForm] = useState({
@@ -114,6 +177,11 @@ const Hero = ({
     const t = setTimeout(() => setMsg({ type: "", text: "" }), 4000);
     return () => clearTimeout(t);
   }, [msg]);
+
+  // Show skeleton if loading
+  if (isLoading) {
+    return <HeroSkeleton />;
+  }
 
   return (
     <section

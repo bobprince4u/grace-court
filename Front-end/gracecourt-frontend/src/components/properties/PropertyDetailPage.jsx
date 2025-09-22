@@ -213,11 +213,11 @@ const PropertyDetailPage = () => {
     [navigate]
   );
 
-  const handleBookNow = useCallback(() => {
-    // Implement booking logic here
-    console.log("Booking property:", property?._id);
-    // You could open a modal, navigate to booking page, etc.
-  }, [property]);
+  //const handleBookNow = useCallback(() => {
+  // Implement booking logic here
+  console.log("Booking property:", property?._id);
+  // You could open a modal, navigate to booking page, etc.
+  //}, [property]);
 
   const handleRetry = useCallback(() => {
     fetchProperty();
@@ -526,12 +526,14 @@ const PropertyDetailPage = () => {
 
             {/* Call to Action */}
             <div className="pt-4 border-t border-gray-200">
-              <button
-                onClick={handleBookNow}
-                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium"
+              <a
+                href="https://www.airbnb.com/rooms/1505635273816946738?guests=1&adults=1&s=67&unique_share_id=aaaf586f-9948-467e-9701-49f55584656d&source_impression_id=p3_1758546335_P3KIr6GNjBjtmBRf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium block text-center"
               >
                 Book Now
-              </button>
+              </a>
               <p className="text-xs text-gray-500 mt-2 text-center">
                 Secure booking • Instant confirmation
               </p>

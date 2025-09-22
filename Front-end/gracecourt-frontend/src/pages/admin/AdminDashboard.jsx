@@ -16,7 +16,7 @@ import {
   X,
   LogOut,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // 👈 needed for redirect
+import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
       >
         <div>
           <div className="p-8 border-b border-white/10 text-center">
-            <h1 className="text-2xl font-bold">Graceourt</h1>
+            <h1 className="text-2xl font-bold">Graceurt</h1>
             <p className="text-sm text-slate-400">Admin Dashboard</p>
           </div>
           <nav className="p-4 space-y-2">
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
             </button>
             <div>
               <h2 className="text-xl font-bold">Welcome, Admin</h2>
-              <p className="text-sm text-slate-500">Gracecourt Management</p>
+              <p className="text-sm text-slate-500">Gracecurt Management</p>
             </div>
           </div>
           <div className="flex items-center gap-4">

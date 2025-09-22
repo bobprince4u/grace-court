@@ -206,7 +206,7 @@ const PropertyCard = ({ property, index }) => {
                   </svg>
                 </div>
                 <p className="text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Graceourt Properties
+                  Graceurt Properties
                 </p>
               </div>
 
@@ -547,10 +547,9 @@ const PropertyList = ({
           <div className="text-center mt-12">
             <Link
               to="/properties"
-              className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              //className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              View All Properties
-              <svg
+              {/*  <svg
                 className="w-5 h-5 ml-2"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -562,7 +561,7 @@ const PropertyList = ({
                   strokeWidth={2}
                   d="M17 8l4 4m0 0l-4 4m4-4H3"
                 />
-              </svg>
+              </svg>*/}
             </Link>
           </div>
         )}

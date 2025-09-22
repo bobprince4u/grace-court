@@ -357,8 +357,9 @@ export default function Properties() {
               <div className="flex items-start border rounded-lg shadow-sm p-2">
                 <FileText className="w-5 h-5 text-gray-400 mr-2 mt-1" />
                 <textarea
-                  className="outline-none flex-1"
-                  placeholder="Description"
+                  className="outline-none flex-1 resize-none"
+                  placeholder="Property Description"
+                  rows={4}
                   value={formState.description}
                   onChange={(e) =>
                     setFormState((prev) => ({
@@ -366,9 +367,10 @@ export default function Properties() {
                       description: e.target.value,
                     }))
                   }
-                  maxLength={600}
+                  required
                 />
               </div>
+
               <select
                 className="border rounded-lg shadow-sm p-2 w-full"
                 value={formState.status}
