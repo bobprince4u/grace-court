@@ -12,11 +12,11 @@ import {
 import { Link } from "react-router-dom";
 
 const Footer = ({
-  contact = { email: "support@graceourt.com", phone: "+234 800 123 4567" },
+  contact = { email: "graceurt@gmail.com", phone: "+234 7077245802" },
 }) => {
   const quickLinks = [
     { label: "Home", href: "/" },
-    { label: "Properties", href: "/properties" },
+    { label: "Properties", href: "/destinations" },
     { label: "Services", href: "/services" },
     { label: "About Us", href: "/about" },
     { label: "Contact Us", href: "/contact" },

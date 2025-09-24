@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import axios from "axios";
 import {
   Home,
@@ -24,8 +24,8 @@ export default function Properties() {
     amenities: "",
     description: "",
     status: "active",
-    propertyImage: [],
-    oldImages: [],
+    propertyImage: [], // array of File objects when uploading
+    oldImages: [], // existing image URLs (strings)
   });
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,7 +35,11 @@ export default function Properties() {
   const [error, setError] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(null);
 
+  // message state (non-alert inline messages)
+  const [message, setMessage] = useState({ type: "", text: "" });
+
   const perPage = 6;
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     setLoading(true);
@@ -67,6 +71,8 @@ export default function Properties() {
   );
 
   const resetForm = () => {
+    // clear file input value to avoid stale selection UI
+    if (fileInputRef.current) fileInputRef.current.value = "";
     setFormState({
       name: "",
       location: "",
@@ -99,18 +105,57 @@ export default function Properties() {
       await axios.delete(`http://localhost:5000/api/properties/${id}`);
       setProperties((prev) => prev.filter((p) => p._id !== id && p.id !== id));
       setConfirmDelete(null);
+      setMessage({ type: "success", text: "Property deleted successfully!" });
     } catch {
-      alert("Failed to delete property");
+      setMessage({ type: "error", text: "Failed to delete property." });
     }
   };
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files || []);
     setFormState((prev) => ({
       ...prev,
       propertyImage: files,
     }));
   };
+
+  const removeImage = (idx) => {
+    setFormState((prev) => ({
+      ...prev,
+      propertyImage: prev.propertyImage.filter((_, i) => i !== idx),
+    }));
+  };
+
+  // build preview list (objects) and ensure we revoke object URLs we create
+  const previewList = useMemo(() => {
+    if (formState.propertyImage && formState.propertyImage.length > 0) {
+      // return objects with flag so we can revoke only created URLs later
+      return formState.propertyImage.map((file) => ({
+        src: URL.createObjectURL(file),
+        isObjectURL: true,
+      }));
+    }
+    // fallback to oldImages (strings)
+    return (formState.oldImages || []).map((src) => ({
+      src,
+      isObjectURL: false,
+    }));
+  }, [formState.propertyImage, formState.oldImages]);
+
+  // cleanup object URLs when previewList changes / component unmounts
+  useEffect(() => {
+    return () => {
+      previewList.forEach((p) => {
+        if (p.isObjectURL) {
+          try {
+            URL.revokeObjectURL(p.src);
+          } catch {
+            // ignore
+          }
+        }
+      });
+    };
+  }, [previewList]);
 
   const handleSave = async () => {
     const formData = new FormData();
@@ -122,7 +167,7 @@ export default function Properties() {
     if (formState.amenities.trim()) {
       formData.append("amenities", formState.amenities);
     }
-    formState.propertyImage.forEach((file) => {
+    (formState.propertyImage || []).forEach((file) => {
       formData.append("propertyImage", file);
     });
 
@@ -136,6 +181,7 @@ export default function Properties() {
         setProperties((prev) =>
           prev.map((p) => (p._id === editingProperty ? res.data.property : p))
         );
+        setMessage({ type: "success", text: "Property updated successfully!" });
       } else {
         const res = await axios.post(
           "http://localhost:5000/api/properties",
@@ -143,12 +189,22 @@ export default function Properties() {
           { headers: { "Content-Type": "multipart/form-data" } }
         );
         setProperties((prev) => [res.data.property, ...prev]);
+        setMessage({ type: "success", text: "Property saved successfully!" });
       }
       resetForm();
     } catch {
-      alert("Failed to save property");
+      setMessage({ type: "error", text: "Failed to save property." });
     }
   };
+
+  // auto-dismiss message after 4 seconds
+  useEffect(() => {
+    if (!message.text) return;
+    const t = setTimeout(() => setMessage({ type: "", text: "" }), 4000);
+    return () => clearTimeout(t);
+  }, [message]);
+
+  // placeholder to keep code shape similar to original (no change)
 
   return (
     <div className="p-4">
@@ -161,6 +217,19 @@ export default function Properties() {
           <Plus size={18} /> Add Property
         </button>
       </h2>
+
+      {/* Message Display */}
+      {message.text && (
+        <div
+          className={`mb-4 p-3 rounded-lg shadow-sm text-sm ${
+            message.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
 
       {/* Search / Filter */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -309,6 +378,7 @@ export default function Properties() {
                   required
                 />
               </div>
+
               <div className="flex items-center border rounded-lg shadow-sm p-2">
                 <MapPin className="w-5 h-5 text-gray-400 mr-2" />
                 <input
@@ -324,6 +394,7 @@ export default function Properties() {
                   required
                 />
               </div>
+
               <div className="flex items-center border rounded-lg shadow-sm p-2">
                 <Bed className="w-5 h-5 text-gray-400 mr-2" />
                 <input
@@ -340,6 +411,7 @@ export default function Properties() {
                   required
                 />
               </div>
+
               <div className="flex items-center border rounded-lg shadow-sm p-2">
                 <ClipboardList className="w-5 h-5 text-gray-400 mr-2" />
                 <input
@@ -354,6 +426,7 @@ export default function Properties() {
                   }
                 />
               </div>
+
               <div className="flex items-start border rounded-lg shadow-sm p-2">
                 <FileText className="w-5 h-5 text-gray-400 mr-2 mt-1" />
                 <textarea
@@ -375,40 +448,48 @@ export default function Properties() {
                 className="border rounded-lg shadow-sm p-2 w-full"
                 value={formState.status}
                 onChange={(e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    status: e.target.value,
-                  }))
+                  setFormState((prev) => ({ ...prev, status: e.target.value }))
                 }
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
+
               <div className="flex items-center border rounded-lg shadow-sm p-2">
                 <ImageIcon className="w-5 h-5 text-gray-400 mr-2" />
                 <input
+                  ref={fileInputRef}
                   type="file"
                   multiple
                   className="flex-1"
                   onChange={handleImageChange}
                 />
               </div>
+
               <div className="flex gap-2 flex-wrap mb-3">
-                {(formState.propertyImage.length > 0
-                  ? Array.from(formState.propertyImage).map((f) =>
-                      URL.createObjectURL(f)
-                    )
-                  : formState.oldImages
-                ).map((img, idx) => (
-                  <img
-                    key={idx}
-                    src={img}
-                    alt=""
-                    className="w-16 h-16 object-cover rounded-lg shadow-sm"
-                  />
+                {previewList.map((p, idx) => (
+                  <div key={idx} className="relative">
+                    <img
+                      src={p.src}
+                      alt=""
+                      className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                    />
+                    {/* show remove icon only for newly uploaded files (i.e. when formState.propertyImage is present) */}
+                    {formState.propertyImage &&
+                      formState.propertyImage.length > 0 &&
+                      p.isObjectURL && (
+                        <button
+                          onClick={() => removeImage(idx)}
+                          className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 shadow-md"
+                        >
+                          <XCircle size={14} />
+                        </button>
+                      )}
+                  </div>
                 ))}
               </div>
             </div>
+
             <div className="flex justify-end gap-3 mt-4">
               <button
                 className="flex items-center gap-1 px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 transition cursor-pointer"

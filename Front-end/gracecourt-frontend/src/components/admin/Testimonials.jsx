@@ -2,6 +2,17 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import {
+  Plus,
+  Search,
+  Filter,
+  Eye,
+  CheckCircle,
+  Trash2,
+  X,
+  Loader2,
+  MessageSquare,
+} from "lucide-react";
 
 export default function Testimonials() {
   const [testimonials, setTestimonials] = useState([]);
@@ -90,7 +101,6 @@ export default function Testimonials() {
   const setLoadingFor = (id, val) =>
     setActionLoading((prev) => ({ ...prev, [id]: !!val }));
 
-  // Approve testimonial
   const approveTestimonial = async (id) => {
     try {
       setLoadingFor(id, true);
@@ -213,44 +223,56 @@ export default function Testimonials() {
     <div>
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Manage Testimonials</h2>
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <MessageSquare className="w-6 h-6 text-blue-500" />
+          Manage Testimonials
+        </h2>
         <button
           onClick={() => setIsAdding(true)}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer flex items-center gap-2"
         >
-          + Add New
+          <Plus className="w-4 h-4" />
+          Add New
         </button>
       </div>
 
       {/* Search & Filter */}
       <div className="flex flex-wrap gap-4 mb-4">
-        <input
-          type="text"
-          placeholder="Search by customer name..."
-          className="border px-3 py-2 rounded w-64"
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1);
-          }}
-        />
-        <select
-          className="border px-3 py-2 rounded"
-          value={filterStatus}
-          onChange={(e) => {
-            setFilterStatus(e.target.value);
-            setCurrentPage(1);
-          }}
-        >
-          <option>All</option>
-          <option>Pending</option>
-          <option>Approved</option>
-        </select>
+        <div className="relative">
+          <Search className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search by customer name..."
+            className="border pl-8 pr-3 py-2 rounded w-64"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+        </div>
+
+        <div className="relative">
+          <Filter className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" />
+          <select
+            className="border pl-8 pr-3 py-2 rounded"
+            value={filterStatus}
+            onChange={(e) => {
+              setFilterStatus(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option>All</option>
+            <option>Pending</option>
+            <option>Approved</option>
+          </select>
+        </div>
       </div>
 
       {/* Table */}
       {loadingFetch ? (
-        <div className="text-center py-10 text-gray-500">
+        <div className="text-center py-10 text-gray-500 flex items-center justify-center gap-2">
+          <Loader2 className="w-5 h-5 animate-spin" />
           Loading testimonials...
         </div>
       ) : (
@@ -297,25 +319,35 @@ export default function Testimonials() {
                       <td className="px-4 py-2 flex flex-wrap gap-2">
                         <button
                           onClick={() => setSelectedTestimonial(t)}
-                          className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+                          className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer flex items-center gap-1"
                         >
-                          View
+                          <Eye className="w-4 h-4" /> View
                         </button>
 
                         <button
                           onClick={() => approveTestimonial(id)}
                           disabled={actionLoading[id]}
-                          className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer disabled:opacity-50"
+                          className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer disabled:opacity-50 flex items-center gap-1"
                         >
-                          {actionLoading[id] ? "..." : "Approve"}
+                          {actionLoading[id] ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <CheckCircle className="w-4 h-4" />
+                          )}
+                          Approve
                         </button>
 
                         <button
                           onClick={() => deleteTestimonial(id)}
                           disabled={actionLoading[id]}
-                          className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer disabled:opacity-50"
+                          className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer disabled:opacity-50 flex items-center gap-1"
                         >
-                          {actionLoading[id] ? "..." : "Delete"}
+                          {actionLoading[id] ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-4 h-4" />
+                          )}
+                          Delete
                         </button>
                       </td>
                     </tr>
@@ -374,7 +406,7 @@ export default function Testimonials() {
                 onClick={closeAddModal}
                 className="absolute top-3 right-3 text-gray-500 hover:text-black"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
               <h3 className="text-xl font-bold mb-4">Add New Testimonial</h3>
 
@@ -417,9 +449,9 @@ export default function Testimonials() {
 
                 <button
                   onClick={handleAddNew}
-                  className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center justify-center gap-2"
                 >
-                  Add Testimonial
+                  <Plus className="w-4 h-4" /> Add Testimonial
                 </button>
               </div>
             </motion.div>
@@ -446,7 +478,7 @@ export default function Testimonials() {
                 onClick={() => setSelectedTestimonial(null)}
                 className="absolute top-3 right-3 text-gray-500 hover:text-black"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
 
               <div className="flex flex-col items-center text-center">
@@ -467,22 +499,28 @@ export default function Testimonials() {
                       approveTestimonial(getId(selectedTestimonial))
                     }
                     disabled={actionLoading[getId(selectedTestimonial)]}
-                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 flex items-center gap-1"
                   >
-                    {actionLoading[getId(selectedTestimonial)]
-                      ? "..."
-                      : "Approve"}
+                    {actionLoading[getId(selectedTestimonial)] ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <CheckCircle className="w-4 h-4" />
+                    )}
+                    Approve
                   </button>
                   <button
                     onClick={() =>
                       deleteTestimonial(getId(selectedTestimonial))
                     }
                     disabled={actionLoading[getId(selectedTestimonial)]}
-                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 flex items-center gap-1"
                   >
-                    {actionLoading[getId(selectedTestimonial)]
-                      ? "..."
-                      : "Delete"}
+                    {actionLoading[getId(selectedTestimonial)] ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                    Delete
                   </button>
                 </div>
               </div>
@@ -491,7 +529,7 @@ export default function Testimonials() {
         )}
       </AnimatePresence>
 
-      {/*  Error Modal */}
+      {/* ⚠️ Error Modal */}
       <AnimatePresence>
         {errorModal.show && (
           <motion.div
@@ -501,25 +539,19 @@ export default function Testimonials() {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg relative"
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 50, opacity: 0 }}
+              className="bg-white rounded-xl p-6 max-w-sm w-full shadow-lg relative"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
             >
               <button
                 onClick={() => setErrorModal({ show: false, message: "" })}
                 className="absolute top-3 right-3 text-gray-500 hover:text-black"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
-              <h3 className="text-xl font-bold mb-4 text-red-600">Error</h3>
-              <p className="text-gray-700 mb-4">{errorModal.message}</p>
-              <button
-                onClick={() => setErrorModal({ show: false, message: "" })}
-                className="w-full py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Close
-              </button>
+              <h3 className="text-lg font-bold mb-2">Error</h3>
+              <p className="text-gray-600">{errorModal.message}</p>
             </motion.div>
           </motion.div>
         )}

@@ -7,7 +7,7 @@ router.get("/search", propertyController.searchProperties);
 
 router.post(
   "/",
-  upload.array("propertyImage", 10),
+  upload.array("propertyImage", 15),
   propertyController.createProperty
 );
 
