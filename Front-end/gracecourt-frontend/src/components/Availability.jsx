@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Calendar, User } from "lucide-react";
 
 const BookingCalendar = ({
-  // Props for customization
-  defaultRate = 120,
-  currency = "$",
   onBookingComplete = (bookingData) =>
     console.log("Booking completed:", bookingData),
   onDateSelect = (date) => console.log("Date selected:", date),
@@ -16,30 +13,22 @@ const BookingCalendar = ({
   const [selectedCheckOut, setSelectedCheckOut] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [availabilityData, setAvailabilityData] = useState({});
-  // Removed unused 'rates' state
   const [guests, setGuests] = useState(1);
 
   // Mock data for demonstration - replace with actual API calls
   const mockAvailabilityData = {
-    "2025-08-01": { available: false, rate: 120 },
-    "2025-08-02": { available: true, rate: 120 },
-    "2025-08-03": { available: true, rate: 140 },
-    "2025-08-10": { available: false, rate: 120 },
-    "2025-08-17": { available: false, rate: 120 },
-    "2025-08-24": { available: false, rate: 120 },
-    "2025-08-31": { available: false, rate: 120 },
+    "2025-08-01": { available: false },
+    "2025-08-02": { available: true },
+    "2025-08-03": { available: true },
+    "2025-08-10": { available: false },
+    "2025-08-17": { available: false },
+    "2025-08-24": { available: false },
+    "2025-08-31": { available: false },
   };
 
-  // Fetch availability data from backend
   const fetchAvailability = React.useCallback(async (year, month) => {
     try {
       setIsLoading(true);
-
-      // TODO: Replace with actual API call when backend is ready
-      // const response = await fetch(`${apiEndpoint}?year=${year}&month=${month + 1}`);
-      // const data = await response.json();
-
-      // For now, use mock data
       console.log(
         `Fetching availability for year: ${year}, month: ${month + 1}`
       );
@@ -52,29 +41,15 @@ const BookingCalendar = ({
     }
   }, []);
 
-  // Submit booking to backend
   const submitBooking = async (bookingData) => {
     try {
       setIsLoading(true);
-
-      // Use bookingData (for demonstration, log it)
       console.log("Submitting booking:", bookingData);
 
-      // TODO: Replace with actual API call when backend is ready
-      // const response = await fetch(`${apiEndpoint}/book`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(bookingData)
-      // });
-      // const result = await response.json();
-
-      // For now, simulate successful booking
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const result = { success: true, bookingId: "BK" + Date.now() };
 
       onBookingComplete(result);
-
-      // Reset selection after successful booking
       setSelectedCheckIn(null);
       setSelectedCheckOut(null);
     } catch (error) {
@@ -99,31 +74,21 @@ const BookingCalendar = ({
     const startingDayOfWeek = firstDay.getDay();
 
     const days = [];
-
-    // Add empty cells for days before the first day of the month
-    for (let i = 0; i < startingDayOfWeek; i++) {
-      days.push(null);
-    }
-
-    // Add days of the month
-    for (let day = 1; day <= daysInMonth; day++) {
-      days.push(day);
-    }
+    for (let i = 0; i < startingDayOfWeek; i++) days.push(null);
+    for (let day = 1; day <= daysInMonth; day++) days.push(day);
 
     return days;
   };
 
-  const formatDate = (year, month, day) => {
-    return `${year}-${String(month + 1).padStart(2, "0")}-${String(
-      day
-    ).padStart(2, "0")}`;
-  };
+  const formatDate = (year, month, day) =>
+    `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(
+      2,
+      "0"
+    )}`;
 
   const isDateAvailable = (year, month, day) => {
     const dateStr = formatDate(year, month, day);
-    if (unavailableDates.includes(dateStr)) {
-      return false;
-    }
+    if (unavailableDates.includes(dateStr)) return false;
     const availability = availabilityData[dateStr];
     return availability ? availability.available : true;
   };
@@ -137,27 +102,22 @@ const BookingCalendar = ({
 
   const handleDateClick = (day) => {
     if (!day) return;
-
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const clickedDate = new Date(year, month, day);
 
-    if (isDateInPast(year, month, day) || !isDateAvailable(year, month, day)) {
+    if (isDateInPast(year, month, day) || !isDateAvailable(year, month, day))
       return;
-    }
 
     if (!selectedCheckIn || (selectedCheckIn && selectedCheckOut)) {
-      // Select check-in date
       setSelectedCheckIn(clickedDate);
       setSelectedCheckOut(null);
       onDateSelect(clickedDate);
     } else if (selectedCheckIn && !selectedCheckOut) {
-      // Select check-out date
       if (clickedDate > selectedCheckIn) {
         setSelectedCheckOut(clickedDate);
         onDateSelect(clickedDate);
       } else {
-        // If clicked date is before check-in, make it the new check-in
         setSelectedCheckIn(clickedDate);
         setSelectedCheckOut(null);
         onDateSelect(clickedDate);
@@ -182,7 +142,6 @@ const BookingCalendar = ({
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const date = new Date(year, month, day);
-
     return date > selectedCheckIn && date < selectedCheckOut;
   };
 
@@ -190,15 +149,6 @@ const BookingCalendar = ({
     const newDate = new Date(currentDate);
     newDate.setMonth(currentDate.getMonth() + direction);
     setCurrentDate(newDate);
-  };
-
-  const calculateTotal = () => {
-    if (!selectedCheckIn || !selectedCheckOut) return 0;
-
-    const nights = Math.ceil(
-      (selectedCheckOut - selectedCheckIn) / (1000 * 60 * 60 * 24)
-    );
-    return nights * defaultRate;
   };
 
   const calculateNights = () => {
@@ -213,11 +163,9 @@ const BookingCalendar = ({
       const bookingData = {
         checkIn: selectedCheckIn.toISOString().split("T")[0],
         checkOut: selectedCheckOut.toISOString().split("T")[0],
-        guests: guests,
+        guests,
         nights: calculateNights(),
-        total: calculateTotal(),
       };
-
       submitBooking(bookingData);
     }
   };
@@ -236,7 +184,6 @@ const BookingCalendar = ({
     "November",
     "December",
   ];
-
   const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
 
   const days = getDaysInMonth(currentDate);
@@ -259,19 +206,17 @@ const BookingCalendar = ({
             <div className="flex items-center justify-between mb-3 sm:mb-4">
               <button
                 onClick={() => navigateMonth(-1)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors touch-manipulation"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 disabled={isLoading}
               >
                 <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
               </button>
-
               <h3 className="text-base sm:text-lg font-medium">
                 {monthNames[currentMonth]} {currentYear}
               </h3>
-
               <button
                 onClick={() => navigateMonth(1)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors touch-manipulation"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 disabled={isLoading}
               >
                 <ChevronRight size={18} className="sm:w-5 sm:h-5" />
@@ -280,7 +225,6 @@ const BookingCalendar = ({
 
             {/* Calendar Grid */}
             <div className="bg-gray-50 rounded-lg p-2 sm:p-4 lg:p-6">
-              {/* Day Headers */}
               <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2">
                 {dayNames.map((day, index) => (
                   <div
@@ -292,7 +236,6 @@ const BookingCalendar = ({
                 ))}
               </div>
 
-              {/* Calendar Days */}
               <div className="grid grid-cols-7 gap-1 sm:gap-2 lg:gap-3">
                 {days.map((day, index) => {
                   const isAvailable = day
@@ -310,7 +253,7 @@ const BookingCalendar = ({
                       onClick={() => handleDateClick(day)}
                       disabled={!day || isPast || !isAvailable || isLoading}
                       className={`
-                        h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-xs sm:text-sm rounded transition-all relative flex items-center justify-center touch-manipulation
+                        h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-xs sm:text-sm rounded transition-all relative flex items-center justify-center
                         ${!day ? "invisible" : ""}
                         ${
                           isPast || !isAvailable
@@ -364,7 +307,6 @@ const BookingCalendar = ({
                     </span>
                   </div>
                 </div>
-
                 <div>
                   <label className="text-xs text-gray-600 mb-1 block">
                     Check-out
@@ -389,13 +331,6 @@ const BookingCalendar = ({
                   <span className="text-sm">Nights</span>
                   <span className="text-sm">{calculateNights()}</span>
                 </div>
-                <div className="flex justify-between items-center mt-1">
-                  <span className="text-sm">Rate per night</span>
-                  <span className="text-sm font-medium">
-                    {currency}
-                    {defaultRate}
-                  </span>
-                </div>
               </div>
 
               {/* Guests */}
@@ -408,7 +343,7 @@ const BookingCalendar = ({
                   <select
                     value={guests}
                     onChange={(e) => setGuests(parseInt(e.target.value))}
-                    className="flex-1 bg-transparent text-sm focus:outline-none touch-manipulation"
+                    className="flex-1 bg-transparent text-sm focus:outline-none"
                   >
                     {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                       <option key={num} value={num}>
@@ -419,14 +354,11 @@ const BookingCalendar = ({
                 </div>
               </div>
 
-              {/* Total */}
+              {/* Total (now just shows nights count for clarity) */}
               <div className="border-t pt-4 mb-4 sm:mb-6">
                 <div className="flex justify-between items-center text-base sm:text-lg font-semibold">
-                  <span>Total</span>
-                  <span>
-                    {currency}
-                    {calculateTotal()}
-                  </span>
+                  <span>Total Nights</span>
+                  <span>{calculateNights()}</span>
                 </div>
               </div>
 
@@ -435,7 +367,7 @@ const BookingCalendar = ({
                 onClick={handleBookNow}
                 disabled={!selectedCheckIn || !selectedCheckOut || isLoading}
                 className={`
-                  w-full py-3 px-4 rounded font-medium transition-colors text-sm sm:text-base touch-manipulation
+                  w-full py-3 px-4 rounded font-medium transition-colors text-sm sm:text-base
                   ${
                     selectedCheckIn && selectedCheckOut && !isLoading
                       ? "bg-gray-800 hover:bg-gray-900 active:bg-black text-white"

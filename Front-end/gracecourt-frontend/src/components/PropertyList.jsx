@@ -438,7 +438,7 @@ const PropertyList = ({
             </svg>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
             {title}
           </h2>
 

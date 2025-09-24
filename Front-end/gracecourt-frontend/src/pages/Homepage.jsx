@@ -33,7 +33,7 @@ const Homepage = () => {
     <>
       <Hero onSearch={setSearchResults} />
 
-      <section id="destinations" className="bg-white mb-4 py-3 ">
+      <section id="destinations" className="bg-white mb-4 py-3">
         <PropertyList searchResults={searchResults} properties={properties} />
       </section>
 

@@ -56,7 +56,9 @@ const AboutUs = memo(() => {
 
   return (
     <section className="py-12 px-6 mt-16 text-center">
-      <h2 className="text-2xl font-bold mb-10">About Us</h2>
+      <h2 className="text-3xl font-bold mb-10 bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
+        About Us
+      </h2>
       <div className="flex flex-col md:flex-row gap-6 justify-center">
         {renderedCards}
       </div>
