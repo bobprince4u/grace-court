@@ -62,7 +62,7 @@ const ContactForm = () => {
     {
       id: 1,
       label: "Phone Number",
-      value: "+234 810 123-4567",
+      value: "+234 7077245802",
       icon: Phone,
       color: "bg-blue-50 text-blue-600",
       hoverColor: "hover:bg-blue-100",
@@ -78,7 +78,7 @@ const ContactForm = () => {
     {
       id: 3,
       label: "Email Address",
-      value: "contact@graceurt.com",
+      value: "graceurt@gmail.com",
       icon: Mail,
       color: "bg-purple-50 text-purple-600",
       hoverColor: "hover:bg-purple-100",
