@@ -22,7 +22,7 @@ const ABOUT_DATA = [
     id: 3,
     title: "Our Values",
     description:
-      "At Gracecourt, we value Excellence. Transparency, Comfort, Innovation and Community.",
+      "At Graceurt, we value Excellence. Transparency, Comfort, Innovation and Community.",
     icon: Diamond,
   },
 ];
