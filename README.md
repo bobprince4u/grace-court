@@ -10,7 +10,7 @@
 
 A modern full-stack **luxury shortlet rental platform** with property listings, image uploads (via **AWS S3**), and a secure **admin dashboard** for property management.  
 
-🔗 **Live Demo:** _coming soon_  
+🔗 **Live Demo:** _coming soon_ with the MVP 
 
 ---
 
