@@ -18,42 +18,48 @@ const servicesData = [
   {
     id: 1,
     title: "Premium Properties",
-    description: "Luxury Downtown Apartment, Luxury Downtown Apartment.",
+    description:
+      "From penthouses to maisonettes and apartments, Graceurt offers a variety of premium spaces designed for modern living. Each home is crafted with breathtaking architecture, exceptional finishing, and amenities that elevate your lifestyle.",
     image: ikoyi,
     icon: <FaHome className="text-white text-2xl" />,
   },
   {
     id: 2,
     title: "Seamless Check-In",
-    description: "Luxury Downtown Apartment, Luxury Downtown Apartment.",
+    description:
+      "Arrive and feel at home instantly. Our simple, tech-enabled check-in process ensures a smooth transition from the door to your living space.",
     image: seamless,
     icon: <FaKey className="text-white text-2xl" />,
   },
   {
     id: 3,
     title: "24/7 Support",
-    description: "Luxury Downtown Apartment, Luxury Downtown Apartment.",
+    description:
+      "Day or night, our dedicated support team is always available to ensure your comfort and peace of mind.",
     image: support,
     icon: <FaHeadset className="text-white text-2xl" />,
   },
   {
     id: 4,
     title: "Professional Cleaning",
-    description: "Luxury Downtown Apartment, Luxury Downtown Apartment.",
+    description:
+      "Impeccable hygiene is part of the Graceurt promise. Every apartment is cleaned and maintained to the highest standard for your comfort.",
     image: cleaning_services,
     icon: <FaBroom className="text-white text-2xl" />,
   },
   {
     id: 5,
     title: "Transparent Pricing",
-    description: "Luxury Downtown Apartment, Luxury Downtown Apartment.",
+    description:
+      "What you see is what you pay. No hidden charges, just clear, straightforward pricing for premium living",
     image: transparent_pricing,
     icon: <FaBalanceScale className="text-white text-2xl" />,
   },
   {
     id: 6,
     title: "Easy Booking",
-    description: "Luxury Downtown Apartment, Luxury Downtown Apartment.",
+    description:
+      "Booking your stay is just a few clicks away—fast, simple, and stress-free.",
     image: Easy_booking,
     icon: <FaHotel className="text-white text-2xl" />,
   },

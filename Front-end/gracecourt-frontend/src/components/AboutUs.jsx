@@ -8,21 +8,21 @@ const ABOUT_DATA = [
     id: 1,
     title: "Our Mission",
     description:
-      "At Gracecourt, our mission is to provide exceptional short-let stays that blend luxury, comfort, and convenience. We aim to create a seamless home-away-from-home experience for every guest, whether for a short visit or an extended stay.",
+      "To redefine luxury living on the mainland by creating modern, stylish, and functional apartments that feel like home, yet elevate every moment with comfort and class.",
     icon: Target,
   },
   {
     id: 2,
     title: "Our Vision",
     description:
-      "Our vision is to become the go-to choice for discerning travelers seeking premium short-term accommodations. We strive to elevate every journey with stylish spaces, thoughtful service, and unforgettable comfort.",
+      "To become the premier choice for premium serviced apartments in Lagos, setting the standard for quality, design, and hospitality.",
     icon: Eye,
   },
   {
     id: 3,
     title: "Our Values",
     description:
-      "At Gracecourt, we value excellence, comfort, and style in every stay. From prime locations to well-designed interiors, we focus on convenience and warm hospitality, making each guest feel right at home.",
+      "At Gracecourt, we value Excellence. Transparency, Comfort, Innovation and Community.",
     icon: Diamond,
   },
 ];
