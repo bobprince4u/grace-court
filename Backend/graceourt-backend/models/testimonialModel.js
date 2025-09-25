@@ -1,4 +1,3 @@
-// models/testimonialModel.js
 const mongoose = require("mongoose");
 
 const testimonialSchema = new mongoose.Schema(

@@ -125,7 +125,7 @@ const Navbar = () => {
 
         {/* Book Now Button */}
         <a
-          href="https://www.airbnb.com/rooms/1505635273816946738?guests=1&adults=1&s=67&unique_share_id=aaaf586f-9948-467e-9701-49f55584656d&source_impression_id=p3_1758546335_P3KIr6GNjBjtmBRf"
+          href=""
           target="_blank"
           rel="noopener noreferrer"
           className="hidden md:block bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg shadow-md transition"

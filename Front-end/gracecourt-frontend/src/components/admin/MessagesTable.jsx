@@ -17,6 +17,9 @@ const MessagesTable = () => {
   // Delete confirmation modal states
   const [confirmDelete, setConfirmDelete] = useState(null);
 
+  // Expanded messages (for mobile read more)
+  const [expandedMessages, setExpandedMessages] = useState({});
+
   // Fetch messages
   const fetchMessages = async () => {
     try {
@@ -103,6 +106,14 @@ const MessagesTable = () => {
     }
   };
 
+  // Toggle expand/collapse for message on mobile
+  const toggleExpand = (id) => {
+    setExpandedMessages((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Messages</h2>
@@ -124,65 +135,116 @@ const MessagesTable = () => {
       {sortedMessages.length === 0 ? (
         <p className="text-gray-500">No messages found.</p>
       ) : (
-        <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-          <table className="min-w-full border border-gray-200">
-            <thead className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
-              <tr>
-                <th
-                  className="px-4 py-3 border-b cursor-pointer hover:text-blue-600"
-                  onClick={() => handleSort("name")}
-                >
-                  Name{" "}
-                  {sortField === "name"
-                    ? sortOrder === "asc"
-                      ? "▲"
-                      : "▼"
-                    : ""}
-                </th>
-                <th className="px-4 py-3 border-b">Email</th>
-                <th className="px-4 py-3 border-b">Phone</th>
-                <th className="px-4 py-3 border-b">Message</th>
-                <th
-                  className="px-4 py-3 border-b cursor-pointer hover:text-blue-600"
-                  onClick={() => handleSort("createdAt")}
-                >
-                  Date{" "}
-                  {sortField === "createdAt"
-                    ? sortOrder === "asc"
-                      ? "▲"
-                      : "▼"
-                    : ""}
-                </th>
-                <th className="px-4 py-3 border-b text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentMessages.map((msg, i) => (
-                <tr
-                  key={msg._id}
-                  className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                >
-                  <td className="px-4 py-3 border-b">{msg.name}</td>
-                  <td className="px-4 py-3 border-b">{msg.email}</td>
-                  <td className="px-4 py-3 border-b">{msg.phone || "N/A"}</td>
-                  <td className="px-4 py-3 border-b">{msg.message}</td>
-                  <td className="px-4 py-3 border-b text-sm text-gray-500">
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto bg-white shadow-md rounded-lg">
+            <table className="min-w-full border border-gray-200">
+              <thead className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+                <tr>
+                  <th
+                    className="px-4 py-3 border-b cursor-pointer hover:text-blue-600"
+                    onClick={() => handleSort("name")}
+                  >
+                    Name{" "}
+                    {sortField === "name"
+                      ? sortOrder === "asc"
+                        ? "▲"
+                        : "▼"
+                      : ""}
+                  </th>
+                  <th className="px-4 py-3 border-b">Email</th>
+                  <th className="px-4 py-3 border-b">Phone</th>
+                  <th className="px-4 py-3 border-b">Message</th>
+                  <th
+                    className="px-4 py-3 border-b cursor-pointer hover:text-blue-600"
+                    onClick={() => handleSort("createdAt")}
+                  >
+                    Date{" "}
+                    {sortField === "createdAt"
+                      ? sortOrder === "asc"
+                        ? "▲"
+                        : "▼"
+                      : ""}
+                  </th>
+                  <th className="px-4 py-3 border-b text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentMessages.map((msg, i) => (
+                  <tr
+                    key={msg._id}
+                    className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                  >
+                    <td className="px-4 py-3 border-b">{msg.name}</td>
+                    <td className="px-4 py-3 border-b">{msg.email}</td>
+                    <td className="px-4 py-3 border-b">{msg.phone || "N/A"}</td>
+                    <td className="px-4 py-3 border-b">{msg.message}</td>
+                    <td className="px-4 py-3 border-b text-sm text-gray-500">
+                      {new Date(msg.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 border-b text-center">
+                      <button
+                        onClick={() => setConfirmDelete(msg._id)}
+                        disabled={loading}
+                        className="text-red-600 hover:text-red-800 transition cursor-pointer"
+                        title="Delete message"
+                      >
+                        <Trash2 className="w-5 h-5 inline" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden divide-y">
+            {currentMessages.map((msg) => {
+              const limit = 80;
+              const isLong = msg.message.length > limit;
+              const expanded = expandedMessages[msg._id] || false;
+              const preview = isLong
+                ? msg.message.slice(0, limit) + "..."
+                : msg.message;
+
+              return (
+                <div key={msg._id} className="p-4">
+                  <p className="font-semibold">{msg.name}</p>
+                  <p className="text-sm text-gray-600">{msg.email}</p>
+                  <p className="text-sm text-gray-600">
+                    {msg.phone || "No phone"}
+                  </p>
+
+                  {/* Truncated message with toggle */}
+                  <p className="mt-2 text-gray-800">
+                    {expanded ? msg.message : preview}
+                  </p>
+                  {isLong && (
+                    <button
+                      onClick={() => toggleExpand(msg._id)}
+                      className="text-blue-600 text-sm mt-1 focus:outline-none"
+                    >
+                      {expanded ? "Read less" : "Read more"}
+                    </button>
+                  )}
+
+                  <p className="text-xs text-gray-500 mt-2">
                     {new Date(msg.createdAt).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3 border-b text-center">
+                  </p>
+                  <div className="mt-2">
                     <button
                       onClick={() => setConfirmDelete(msg._id)}
                       disabled={loading}
                       className="text-red-600 hover:text-red-800 transition cursor-pointer"
-                      title="Delete message"
                     >
                       <Trash2 className="w-5 h-5 inline" />
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
           {/* Pagination */}
           <div className="flex justify-between items-center p-4">
@@ -221,7 +283,7 @@ const MessagesTable = () => {
               </button>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Delete Confirmation Modal */}

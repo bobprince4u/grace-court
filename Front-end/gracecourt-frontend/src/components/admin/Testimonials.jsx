@@ -35,6 +35,8 @@ export default function Testimonials() {
   const [actionLoading, setActionLoading] = useState({});
   const [errorModal, setErrorModal] = useState({ show: false, message: "" });
 
+  const [expandedMessages, setExpandedMessages] = useState({});
+
   const perPage = 3;
 
   const getId = (t) => t._id || t.id;
@@ -150,71 +152,11 @@ export default function Testimonials() {
     }
   };
 
-  const handleAddNew = async () => {
-    if (!newTestimonial.name || !newTestimonial.message) {
-      setErrorModal({ show: true, message: "Name and message are required." });
-      return;
-    }
-    if (newTestimonial.message.trim().length < 20) {
-      setErrorModal({
-        show: true,
-        message: "Message must be at least 20 characters long.",
-      });
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("name", newTestimonial.name.trim());
-    formData.append("message", newTestimonial.message.trim());
-    if (newTestimonial.imageFile)
-      formData.append("image", newTestimonial.imageFile);
-
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/testimonials",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-
-      const created = res.data?.testimonial || res.data;
-      if (created) {
-        setTestimonials((prev) => [created, ...prev]);
-      } else {
-        await fetchTestimonials();
-      }
-
-      if (newTestimonial.preview) {
-        URL.revokeObjectURL(newTestimonial.preview);
-      }
-
-      setNewTestimonial({
-        name: "",
-        imageFile: null,
-        preview: "",
-        message: "",
-      });
-      setIsAdding(false);
-    } catch (err) {
-      console.error("Add testimonial error:", err);
-      setErrorModal({
-        show: true,
-        message: err.response?.data?.message || "Failed to add testimonial",
-      });
-    }
-  };
-
-  const handleNewImageChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (newTestimonial.preview) URL.revokeObjectURL(newTestimonial.preview);
-    const preview = URL.createObjectURL(file);
-    setNewTestimonial((s) => ({ ...s, imageFile: file, preview }));
-  };
-
-  const closeAddModal = () => {
-    if (newTestimonial.preview) URL.revokeObjectURL(newTestimonial.preview);
-    setNewTestimonial({ name: "", imageFile: null, preview: "", message: "" });
-    setIsAdding(false);
+  const toggleExpand = (id) => {
+    setExpandedMessages((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   const placeholder = "https://via.placeholder.com/80?text=User";
@@ -291,6 +233,13 @@ export default function Testimonials() {
                 {currentTestimonials.map((t) => {
                   const status = getStatus(t);
                   const id = getId(t);
+                  const limit = 80;
+                  const isLong = t.message.length > limit;
+                  const expanded = expandedMessages[id] || false;
+                  const preview = isLong
+                    ? t.message.slice(0, limit) + "..."
+                    : t.message;
+
                   return (
                     <tr
                       key={id}
@@ -304,8 +253,16 @@ export default function Testimonials() {
                         />
                         <span>{t.name}</span>
                       </td>
-                      <td className="px-4 py-2 truncate max-w-xs">
-                        {t.message}
+                      <td className="px-4 py-2 max-w-xs">
+                        <p>{expanded ? t.message : preview}</p>
+                        {isLong && (
+                          <button
+                            onClick={() => toggleExpand(id)}
+                            className="text-blue-600 text-sm focus:outline-none"
+                          >
+                            {expanded ? "Read less" : "Read more"}
+                          </button>
+                        )}
                       </td>
                       <td
                         className={`px-4 py-2 font-semibold ${
@@ -386,176 +343,6 @@ export default function Testimonials() {
           </div>
         </>
       )}
-
-      {/* ➕ Add Testimonial Modal */}
-      <AnimatePresence>
-        {isAdding && (
-          <motion.div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg relative"
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 50, opacity: 0 }}
-            >
-              <button
-                onClick={closeAddModal}
-                className="absolute top-3 right-3 text-gray-500 hover:text-black"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              <h3 className="text-xl font-bold mb-4">Add New Testimonial</h3>
-
-              <div className="flex flex-col gap-3">
-                <input
-                  type="text"
-                  placeholder="Customer name"
-                  value={newTestimonial.name}
-                  onChange={(e) =>
-                    setNewTestimonial((s) => ({ ...s, name: e.target.value }))
-                  }
-                  className="border px-3 py-2 rounded"
-                />
-
-                <textarea
-                  placeholder="Message"
-                  rows="4"
-                  value={newTestimonial.message}
-                  onChange={(e) =>
-                    setNewTestimonial((s) => ({
-                      ...s,
-                      message: e.target.value,
-                    }))
-                  }
-                  className="border px-3 py-2 rounded"
-                />
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleNewImageChange}
-                />
-                {newTestimonial.preview && (
-                  <img
-                    src={newTestimonial.preview}
-                    alt="Preview"
-                    className="w-24 h-24 rounded-full object-cover"
-                  />
-                )}
-
-                <button
-                  onClick={handleAddNew}
-                  className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center justify-center gap-2"
-                >
-                  <Plus className="w-4 h-4" /> Add Testimonial
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 👁 View Testimonial Modal */}
-      <AnimatePresence>
-        {selectedTestimonial && (
-          <motion.div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg relative"
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 50, opacity: 0 }}
-            >
-              <button
-                onClick={() => setSelectedTestimonial(null)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-black"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              <div className="flex flex-col items-center text-center">
-                <img
-                  src={selectedTestimonial.image || placeholder}
-                  alt={selectedTestimonial.name}
-                  className="w-24 h-24 rounded-full object-cover mb-4"
-                />
-                <h3 className="text-xl font-bold mb-2">
-                  {selectedTestimonial.name}
-                </h3>
-                <p className="text-gray-600 whitespace-pre-wrap">
-                  {selectedTestimonial.message}
-                </p>
-                <div className="mt-4 flex gap-2">
-                  <button
-                    onClick={() =>
-                      approveTestimonial(getId(selectedTestimonial))
-                    }
-                    disabled={actionLoading[getId(selectedTestimonial)]}
-                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 flex items-center gap-1"
-                  >
-                    {actionLoading[getId(selectedTestimonial)] ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <CheckCircle className="w-4 h-4" />
-                    )}
-                    Approve
-                  </button>
-                  <button
-                    onClick={() =>
-                      deleteTestimonial(getId(selectedTestimonial))
-                    }
-                    disabled={actionLoading[getId(selectedTestimonial)]}
-                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 flex items-center gap-1"
-                  >
-                    {actionLoading[getId(selectedTestimonial)] ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="w-4 h-4" />
-                    )}
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ⚠️ Error Modal */}
-      <AnimatePresence>
-        {errorModal.show && (
-          <motion.div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="bg-white rounded-xl p-6 max-w-sm w-full shadow-lg relative"
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-            >
-              <button
-                onClick={() => setErrorModal({ show: false, message: "" })}
-                className="absolute top-3 right-3 text-gray-500 hover:text-black"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              <h3 className="text-lg font-bold mb-2">Error</h3>
-              <p className="text-gray-600">{errorModal.message}</p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

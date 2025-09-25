@@ -5,7 +5,7 @@ const propertySchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "Property name is required"],
-      trim: true, // ✅ fixed typo
+      trim: true,
       minLength: [3, "Property name must be at least 3 characters long"],
       unique: true,
     },
@@ -15,10 +15,9 @@ const propertySchema = new mongoose.Schema(
       required: true,
     },
     rooms: {
-      type: Number,
-      default: 1,
+      type: String,
+      default: "",
       required: true,
-      min: [1, "Property must have at least 1 room"], // ✅ fixed for numbers
     },
     amenities: {
       type: [String],
@@ -39,8 +38,12 @@ const propertySchema = new mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
+    airbnbUrl: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Properties", propertySchema); // ✅ singular for consistency
+module.exports = mongoose.model("Properties", propertySchema);

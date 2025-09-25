@@ -5,7 +5,9 @@ const { uploadToS3 } = require("../utils/s3");
 
 exports.createProperty = async (req, res) => {
   try {
-    const { name, location, rooms, amenities, description } = req.body;
+    const { name, location, rooms, amenities, description, airbnbUrl } =
+      req.body;
+    console.log("REQ.BODY", req.body);
 
     // 1. Validate required fields
     if (!name || !location || !rooms) {
@@ -46,10 +48,15 @@ exports.createProperty = async (req, res) => {
     const newProperty = new Property({
       name,
       location,
-      rooms: Number(rooms),
+      rooms: req.body.rooms,
       amenities: normalizedAmenities,
-      description: description,
+      description:
+        description && description.trim() !== ""
+          ? description.trim()
+          : "No description provided",
+
       propertyImage: imageUrls,
+      airbnbUrl: airbnbUrl || "",
     });
 
     const savedProperty = await newProperty.save();
@@ -75,7 +82,7 @@ exports.getAllProperties = async (req, res) => {
   try {
     const properties = await Property.find(
       {},
-      "name location rooms propertyImage status"
+      "name location rooms propertyImage status description airbnbUrl"
     );
 
     return res.status(200).json({
@@ -99,7 +106,7 @@ exports.getPropertyById = async (req, res) => {
     console.log("=== GET PROPERTY BY ID DEBUG ===");
     console.log("Requested ID:", id);
 
-    // ✅ Validate ObjectId format
+    // Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
       console.log("Invalid ObjectId format");
       return res.status(404).json({
@@ -145,32 +152,27 @@ exports.getPropertyById = async (req, res) => {
 exports.updateProperty = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, location, rooms, amenities, description, status } = req.body;
+    const { name, location, rooms, amenities, description, status, airbnbUrl } =
+      req.body;
 
     console.log("=== UPDATE PROPERTY DEBUG ===");
     console.log("Property ID:", id);
     console.log("Request body:", req.body);
-    console.log("Description field:", description);
-    console.log("Description length:", description?.length || 0);
 
-    // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({
-        success: false,
-        message: "Invalid property ID",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Invalid property ID" });
     }
 
-    // Find existing property
     const existingProperty = await Property.findById(id);
     if (!existingProperty) {
-      return res.status(404).json({
-        success: false,
-        message: "Property not found",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Property not found" });
     }
 
-    // Handle image uploads if any
+    // Handle images
     let imageUrls = existingProperty.propertyImage || [];
     if (req.files && req.files.length > 0) {
       const uploadPromises = req.files.map((file) => uploadToS3(file));
@@ -193,30 +195,29 @@ exports.updateProperty = async (req, res) => {
       ? amenities.split(",").map((a) => a.trim())
       : existingProperty.amenities;
 
-    // Prepare update data - only include fields that should be updated
+    // Build update object
     const updateData = {
       name: name || existingProperty.name,
       location: location || existingProperty.location,
-      rooms: rooms ? Number(rooms) : existingProperty.rooms,
+      rooms: rooms ? rooms : existingProperty.rooms,
       amenities: normalizedAmenities,
       status: status || existingProperty.status,
       propertyImage: imageUrls,
+      airbnbUrl:
+        airbnbUrl !== undefined ? airbnbUrl : existingProperty.airbnbUrl,
     };
 
-    // Only update description if it's provided and not empty
-    if (description !== undefined && description !== null) {
+    // Only overwrite description if non-empty
+    if (description && description.trim() !== "") {
       updateData.description = description.trim();
     }
 
     console.log("Update data:", updateData);
 
-    // Update the property
     const updatedProperty = await Property.findByIdAndUpdate(id, updateData, {
-      new: true, // Return updated document
-      runValidators: true, // Run schema validations
+      new: true,
+      runValidators: true,
     });
-
-    console.log("Updated property:", updatedProperty);
 
     return res.status(200).json({
       success: true,
@@ -225,11 +226,9 @@ exports.updateProperty = async (req, res) => {
     });
   } catch (error) {
     console.error("Update Property Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+    return res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 };
 
@@ -259,11 +258,13 @@ exports.patchProperty = async (req, res) => {
     const updateData = {};
 
     // Standard fields
-    ["name", "location", "rooms", "description", "status"].forEach((field) => {
-      if (req.body[field] !== undefined) {
-        updateData[field] = req.body[field];
+    ["name", "location", "rooms", "description", "status", "airbnbUrl"].forEach(
+      (field) => {
+        if (req.body[field] !== undefined) {
+          updateData[field] = req.body[field];
+        }
       }
-    });
+    );
 
     // Amenities
     if (req.body.amenities !== undefined) {

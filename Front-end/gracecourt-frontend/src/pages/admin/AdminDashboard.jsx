@@ -66,8 +66,8 @@ export default function AdminDashboard() {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // clear JWT
-    navigate("/admin", { replace: true }); // redirect to login
+    localStorage.removeItem("token");
+    navigate("/admin", { replace: true });
   };
 
   return (
@@ -87,7 +87,10 @@ export default function AdminDashboard() {
             {navItems.map((item) => (
               <button
                 key={item.section}
-                onClick={() => setActiveSection(item.section)}
+                onClick={() => {
+                  setActiveSection(item.section);
+                  setSidebarOpen(false); // auto-close on mobile
+                }}
                 className={`flex w-full items-center gap-3 px-6 py-3 rounded-md border-l-4 transition ${
                   activeSection === item.section
                     ? "bg-white/10 text-white border-indigo-400"
@@ -101,7 +104,7 @@ export default function AdminDashboard() {
           </nav>
         </div>
 
-        {/* Logout button pinned at bottom */}
+        {/* Logout */}
         <div className="p-4 border-t border-white/10">
           <button
             onClick={handleLogout}
@@ -113,10 +116,18 @@ export default function AdminDashboard() {
         </div>
       </aside>
 
+      {/* Backdrop Overlay (mobile only) */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
       <div className="flex-1 lg:ml-72">
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-white shadow-sm border-b border-slate-200 px-4 lg:px-8 py-4 flex justify-between items-center">
+        <header className="sticky top-0 z-30 bg-white shadow-sm border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap justify-between items-center gap-2">
           <div className="flex items-center gap-4">
             <button
               className="lg:hidden p-2 rounded-md border text-slate-600"
@@ -125,21 +136,23 @@ export default function AdminDashboard() {
               {sidebarOpen ? <X /> : <Menu />}
             </button>
             <div>
-              <h2 className="text-xl font-bold">Welcome, Admin</h2>
-              <p className="text-sm text-slate-500">Gracecurt Management</p>
+              <h2 className="text-lg sm:text-xl font-bold">Welcome, Admin</h2>
+              <p className="text-xs sm:text-sm text-slate-500">
+                Gracecurt Management
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 w-full sm:w-auto">
             <input
               type="text"
               placeholder="Search..."
-              className="border rounded-md px-3 py-2 text-sm w-64"
+              className="border rounded-md px-3 py-2 text-sm w-full sm:w-64"
             />
             <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-100 rounded-md px-3 py-2">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white flex items-center justify-center font-semibold">
                 A
               </div>
-              <div>
+              <div className="hidden sm:block">
                 <p className="text-sm font-semibold">Admin User</p>
                 <p className="text-xs text-slate-500">Administrator</p>
               </div>
@@ -148,7 +161,7 @@ export default function AdminDashboard() {
         </header>
 
         {/* Dashboard Content */}
-        <main className="p-6 lg:p-10">
+        <main className="p-4 sm:p-6 lg:p-10">
           {activeSection === "dashboard" && <DashboardOverview />}
           {activeSection === "properties" && <Properties />}
           {activeSection === "messages" && <MessagesTable />}

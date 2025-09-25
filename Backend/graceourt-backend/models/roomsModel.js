@@ -37,8 +37,8 @@ const roomsSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true }, // <-- important: include virtuals in JSON
-    toObject: { virtuals: true }, // <-- same for plain objects
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 

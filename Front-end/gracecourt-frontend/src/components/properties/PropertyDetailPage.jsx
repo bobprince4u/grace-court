@@ -488,7 +488,7 @@ const PropertyDetailPage = () => {
             <div className="flex flex-wrap gap-2 mb-6">
               {property.rooms && (
                 <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-full text-sm font-medium">
-                  {property.rooms} Room{property.rooms !== 1 ? "s" : ""}
+                  {property.rooms} {property.rooms !== 1 ? "" : ""}
                 </span>
               )}
               <StatusBadge status={property.status} />
@@ -526,14 +526,24 @@ const PropertyDetailPage = () => {
 
             {/* Call to Action */}
             <div className="pt-4 border-t border-gray-200">
-              <a
-                href="https://www.airbnb.com/rooms/1505635273816946738?guests=1&adults=1&s=67&unique_share_id=aaaf586f-9948-467e-9701-49f55584656d&source_impression_id=p3_1758546335_P3KIr6GNjBjtmBRf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium block text-center"
-              >
-                Book Now
-              </a>
+              {property.airbnbUrl ? (
+                <a
+                  href={property.airbnbUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium block text-center"
+                >
+                  Book Now
+                </a>
+              ) : (
+                <button
+                  disabled
+                  className="w-full bg-gray-400 text-white py-3 px-4 rounded-lg shadow-sm cursor-not-allowed block text-center"
+                >
+                  Not Available Yet
+                </button>
+              )}
+
               <p className="text-xs text-gray-500 mt-2 text-center">
                 Secure booking • Instant confirmation
               </p>

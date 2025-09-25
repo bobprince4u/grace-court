@@ -12,6 +12,7 @@ import {
   Plus,
   Save,
   Trash2,
+  Link as LinkIcon,
 } from "lucide-react";
 
 export default function Properties() {
@@ -24,6 +25,7 @@ export default function Properties() {
     amenities: "",
     description: "",
     status: "active",
+    airbnbUrl: "",
     propertyImage: [], // array of File objects when uploading
     oldImages: [], // existing image URLs (strings)
   });
@@ -34,8 +36,6 @@ export default function Properties() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(null);
-
-  // message state (non-alert inline messages)
   const [message, setMessage] = useState({ type: "", text: "" });
 
   const perPage = 6;
@@ -80,6 +80,7 @@ export default function Properties() {
       amenities: "",
       description: "",
       status: "active",
+      airbnbUrl: "",
       propertyImage: [],
       oldImages: [],
     });
@@ -95,6 +96,7 @@ export default function Properties() {
       amenities: (property.amenities || []).join(", "),
       description: property.description || "",
       status: property.status || "active",
+      airbnbUrl: property.airbnbUrl || "",
       propertyImage: [],
       oldImages: property.propertyImage || [],
     });
@@ -164,8 +166,13 @@ export default function Properties() {
     formData.append("rooms", formState.rooms);
     formData.append("description", formState.description);
     formData.append("status", formState.status);
+
     if (formState.amenities.trim()) {
       formData.append("amenities", formState.amenities);
+    }
+
+    if (formState.airbnbUrl.trim()) {
+      formData.append("airbnbUrl", formState.airbnbUrl.trim());
     }
     (formState.propertyImage || []).forEach((file) => {
       formData.append("propertyImage", file);
@@ -208,7 +215,7 @@ export default function Properties() {
 
   return (
     <div className="p-4">
-      <h2 className="text-3xl font-bold mb-6 flex justify-between items-center">
+      <h2 className="text-2xl font-bold mb-6 flex justify-between items-center">
         Manage Properties
         <button
           onClick={() => setEditingProperty("new")}
@@ -300,7 +307,7 @@ export default function Properties() {
                 <MapPin size={14} /> {property.location}
               </span>
               <span className="px-3 py-1 rounded-full shadow-sm bg-green-100 text-green-700 flex items-center gap-1">
-                <Bed size={14} /> {property.rooms} Rooms
+                <Bed size={14} /> {property.rooms}
               </span>
               <span
                 className={`px-3 py-1 rounded-full shadow-sm flex items-center gap-1 ${
@@ -398,7 +405,7 @@ export default function Properties() {
               <div className="flex items-center border rounded-lg shadow-sm p-2">
                 <Bed className="w-5 h-5 text-gray-400 mr-2" />
                 <input
-                  type="number"
+                  type="text"
                   className="outline-none flex-1"
                   placeholder="Rooms"
                   value={formState.rooms}
@@ -441,6 +448,23 @@ export default function Properties() {
                     }))
                   }
                   required
+                />
+              </div>
+
+              {/* Airbnb URL input */}
+              <div className="flex items-center border rounded-lg shadow-sm p-2">
+                <LinkIcon className="w-5 h-5 text-gray-400 mr-2" />
+                <input
+                  type="url"
+                  className="outline-none flex-1"
+                  placeholder="Airbnb URL (optional)"
+                  value={formState.airbnbUrl}
+                  onChange={(e) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      airbnbUrl: e.target.value,
+                    }))
+                  }
                 />
               </div>
 
