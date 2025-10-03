@@ -1,7 +1,7 @@
 import ikoyi from "./images/ikoyi.webp";
 import seamless from "./images/seamless.jpeg";
 import support from "./images/support.png";
-import cleaning_services from "./images/cleaning_services.jpeg";
+import clean1 from "./images/clean1.jpg";
 import transparent_pricing from "./images/transparent_pricing.jpeg";
 import Easy_booking from "./images/Easy_booking.jpeg";
 
@@ -19,7 +19,7 @@ const servicesData = [
     id: 1,
     title: "Premium Properties",
     description:
-      "From penthouses to maisonettes and apartments, Graceurt offers a variety of premium spaces designed for modern living. Each home is crafted with breathtaking architecture, exceptional finishing, and amenities that elevate your lifestyle.",
+      "From Apartments to Penthouses and Maisonettes, Gracecurt offers a variety of premium spaces designed for modern living. Each home is crafted with breathtaking architecture, exceptional finishing, and amenities that elevate your lifestyle.",
     image: ikoyi,
     icon: <FaHome className="text-white text-2xl" />,
   },
@@ -44,7 +44,7 @@ const servicesData = [
     title: "Professional Cleaning",
     description:
       "Impeccable hygiene is part of the Graceurt promise. Every apartment is cleaned and maintained to the highest standard for your comfort.",
-    image: cleaning_services,
+    image: clean1,
     icon: <FaBroom className="text-white text-2xl" />,
   },
   {

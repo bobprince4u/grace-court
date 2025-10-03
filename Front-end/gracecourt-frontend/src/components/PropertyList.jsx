@@ -263,7 +263,7 @@ const PropertyCard = ({ property, index }) => {
                       />
                     </svg>
                     <span>
-                      {property.rooms} Room{property.rooms !== 1 ? "s" : ""}
+                      {property.rooms} {property.rooms !== 1 ? "" : ""}
                     </span>
                   </div>
                 )}
@@ -279,8 +279,8 @@ const PropertyCard = ({ property, index }) => {
 const PropertyList = ({
   searchResults,
   Properties,
-  title = "Featured Properties",
-  subtitle = "Discover exceptional properties that meet your needs",
+  title = "Exclusive Listings",
+  subtitle = "Discover Short-let accomodation tailored to your needs.",
   showViewAll = true,
   className = "",
   maxProperties = null,

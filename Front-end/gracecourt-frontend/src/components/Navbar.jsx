@@ -80,7 +80,7 @@ const Navbar = () => {
         {/* Logo */}
         <h1
           onClick={() => navigate("/")}
-          className=" cursor-pointer text-2xl font-bold bg-[url('/src/assets/logo.png')] bg-no-repeat bg-contain w-32 h-10"
+          className=" cursor-pointer bg-[url('/src/assets/logo.png')] bg-no-repeat bg-contain w-32 h-10"
         ></h1>
 
         {/* Desktop Menu */}
@@ -128,10 +128,8 @@ const Navbar = () => {
           href=""
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden md:block bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg shadow-md transition"
-        >
-          Book Now
-        </a>
+          className="hidden md:block text-white px-5 py-2 rounded-lg shadow-md transition"
+        ></a>
 
         {/* Mobile Menu Button */}
         <button

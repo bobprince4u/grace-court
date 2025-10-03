@@ -123,12 +123,13 @@ const ContactForm = () => {
       <div className="relative max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
             Get In Touch
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Ready to start your next project? We'd love to hear from you. Send
-            us a message and we'll respond as soon as possible.
+            Ready to start your enquiry or list your Apartment? We'd love to
+            hear from you. Send us a message and we'll respond as soon as
+            possible.
           </p>
         </div>
 
@@ -183,7 +184,7 @@ const ContactForm = () => {
                     />
                     <textarea
                       name="message"
-                      placeholder="Tell us about your project..."
+                      placeholder="Drop a Message..."
                       rows="5"
                       value={formData.message}
                       onChange={handleChange}
