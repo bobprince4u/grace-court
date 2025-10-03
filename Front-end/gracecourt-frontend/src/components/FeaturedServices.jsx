@@ -318,7 +318,7 @@ const FeaturedServices = ({
             Ready to experience exceptional service?
           </p>
           <a
-            href="https://www.airbnb.com/rooms/1505635273816946738?guests=1&adults=1&s=67&unique_share_id=aaaf586f-9948-467e-9701-49f55584656d&source_impression_id=p3_1758546335_P3KIr6GNjBjtmBRf"
+            href=""
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
