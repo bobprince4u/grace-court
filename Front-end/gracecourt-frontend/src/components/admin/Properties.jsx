@@ -44,7 +44,7 @@ export default function Properties() {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://localhost:5000/api/properties")
+      .get("${import.meta.env.VITE_API_URL}/api/properties")
       .then((res) => {
         setProperties(res.data.properties || []);
       })
@@ -104,7 +104,9 @@ export default function Properties() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/properties/${id}`);
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/properties/${id}`
+      );
       setProperties((prev) => prev.filter((p) => p._id !== id && p.id !== id));
       setConfirmDelete(null);
       setMessage({ type: "success", text: "Property deleted successfully!" });
@@ -181,7 +183,7 @@ export default function Properties() {
     try {
       if (editingProperty && editingProperty !== "new") {
         const res = await axios.put(
-          `http://localhost:5000/api/properties/${editingProperty}`,
+          `${import.meta.env.VITE_API_URL}/api/properties/${editingProperty}`,
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -191,7 +193,7 @@ export default function Properties() {
         setMessage({ type: "success", text: "Property updated successfully!" });
       } else {
         const res = await axios.post(
-          "http://localhost:5000/api/properties",
+          "${import.meta.env.VITE_API_URL}/api/properties",
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );

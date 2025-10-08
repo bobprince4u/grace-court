@@ -23,7 +23,7 @@ const MessagesTable = () => {
   // Fetch messages
   const fetchMessages = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/messages");
+      const res = await fetch("${import.meta.env.VITE_API_URL}/api/messages");
       const data = await res.json();
       if (data.success) {
         setMessages(data.messages);
@@ -41,9 +41,12 @@ const MessagesTable = () => {
   const handleDelete = async (id) => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/messages/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/messages/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
       const data = await res.json();
 
       if (data.success) {

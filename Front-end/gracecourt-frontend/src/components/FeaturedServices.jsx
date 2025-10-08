@@ -312,7 +312,7 @@ const FeaturedServices = ({
           ))}
         </div>
 
-        {/* Optional CTA Section */}
+        {/* Optional CTA Section 
         <div className="text-center mt-12 lg:mt-16">
           <p className="text-gray-600 mb-6 text-lg">
             Ready to experience exceptional service?
@@ -339,7 +339,7 @@ const FeaturedServices = ({
               />
             </svg>
           </a>
-        </div>
+        </div>*/}
       </div>
 
       {/* CSS-in-JS for animations */}

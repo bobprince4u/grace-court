@@ -44,7 +44,7 @@ export default function AdminAuth() {
 
     try {
       if (isSignup) {
-        await axios.post("http://localhost:5000/api/auth/signup", {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signup`, {
           fullName: formData.name,
           email: formData.email,
           password: formData.password,
@@ -55,10 +55,13 @@ export default function AdminAuth() {
         setIsSignupAllowed(false);
         setIsSignup(false);
       } else {
-        const res = await axios.post("http://localhost:5000/api/auth/signin", {
-          email: formData.email,
-          password: formData.password,
-        });
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/auth/signin`,
+          {
+            email: formData.email,
+            password: formData.password,
+          }
+        );
 
         const token = res.data.token;
         if (token) {

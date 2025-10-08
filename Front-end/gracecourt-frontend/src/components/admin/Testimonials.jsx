@@ -12,6 +12,7 @@ import {
   X,
   Loader2,
   MessageSquare,
+  Save,
 } from "lucide-react";
 
 export default function Testimonials() {
@@ -25,6 +26,7 @@ export default function Testimonials() {
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
 
   const [isAdding, setIsAdding] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newTestimonial, setNewTestimonial] = useState({
     name: "",
     imageFile: null,
@@ -34,6 +36,10 @@ export default function Testimonials() {
 
   const [actionLoading, setActionLoading] = useState({});
   const [errorModal, setErrorModal] = useState({ show: false, message: "" });
+  const [deleteModal, setDeleteModal] = useState({
+    show: false,
+    testimonial: null,
+  });
 
   const [expandedMessages, setExpandedMessages] = useState({});
 
@@ -48,7 +54,9 @@ export default function Testimonials() {
   const fetchTestimonials = async () => {
     try {
       setLoadingFetch(true);
-      const res = await axios.get("http://localhost:5000/api/testimonials");
+      const res = await axios.get(
+        "${import.meta.env.VITE_API_URL}/api/testimonials"
+      );
       const data = res.data;
       let list = [];
       if (Array.isArray(data)) list = data;
@@ -107,7 +115,7 @@ export default function Testimonials() {
     try {
       setLoadingFor(id, true);
       const res = await axios.patch(
-        `http://localhost:5000/api/testimonials/${id}/approve`
+        `${import.meta.env.VITE_API_URL}/api/testimonials/${id}/approve`
       );
 
       const updated = res.data?.testimonial;
@@ -132,21 +140,23 @@ export default function Testimonials() {
 
   const deleteTestimonial = async (id) => {
     try {
-      if (!window.confirm("Are you sure you want to delete this testimonial?"))
-        return;
       setLoadingFor(id, true);
-      await axios.delete(`http://localhost:5000/api/testimonials/${id}`);
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/testimonials/${id}`
+      );
 
       setTestimonials((prev) => prev.filter((t) => getId(t) !== id));
       if (selectedTestimonial && getId(selectedTestimonial) === id) {
         setSelectedTestimonial(null);
       }
+      setDeleteModal({ show: false, testimonial: null });
     } catch (err) {
       console.error("Delete testimonial error:", err);
       setErrorModal({
         show: true,
         message: err.response?.data?.message || "Failed to delete testimonial",
       });
+      setDeleteModal({ show: false, testimonial: null });
     } finally {
       setLoadingFor(id, false);
     }
@@ -157,6 +167,47 @@ export default function Testimonials() {
       ...prev,
       [id]: !prev[id],
     }));
+  };
+
+  const handleAddSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Submitting testimonial:", newTestimonial);
+    setIsSubmitting(true);
+    try {
+      const formData = new FormData();
+      formData.append("name", newTestimonial.name);
+      formData.append("message", newTestimonial.message);
+      if (newTestimonial.imageFile) {
+        formData.append("image", newTestimonial.imageFile);
+      }
+
+      console.log("FormData created");
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/testimonials`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      console.log("Response:", res.data);
+
+      const created = res.data?.testimonial || res.data;
+      setTestimonials((prev) => [created, ...prev]);
+      setIsAdding(false);
+      setNewTestimonial({
+        name: "",
+        imageFile: null,
+        preview: "",
+        message: "",
+      });
+    } catch (err) {
+      console.error("Add testimonial error:", err);
+      console.error("Error response:", err.response);
+      setErrorModal({
+        show: true,
+        message: err.response?.data?.message || "Failed to save testimonial",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const placeholder = "https://via.placeholder.com/80?text=User";
@@ -177,6 +228,97 @@ export default function Testimonials() {
           Add New
         </button>
       </div>
+
+      {/* Add Testimonial Form */}
+      <AnimatePresence>
+        {isAdding && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="mb-6 bg-white shadow rounded-lg p-4"
+          >
+            <form onSubmit={handleAddSubmit} className="flex flex-col gap-3">
+              <div>
+                <label className="block font-semibold">Name</label>
+                <input
+                  type="text"
+                  value={newTestimonial.name}
+                  onChange={(e) =>
+                    setNewTestimonial({
+                      ...newTestimonial,
+                      name: e.target.value,
+                    })
+                  }
+                  className="border rounded px-3 py-2 w-full"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block font-semibold">Message</label>
+                <textarea
+                  value={newTestimonial.message}
+                  onChange={(e) =>
+                    setNewTestimonial({
+                      ...newTestimonial,
+                      message: e.target.value,
+                    })
+                  }
+                  className="border rounded px-3 py-2 w-full"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block font-semibold">Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setNewTestimonial({
+                        ...newTestimonial,
+                        imageFile: file,
+                        preview: URL.createObjectURL(file),
+                      });
+                    }
+                  }}
+                  className="w-full"
+                />
+                {newTestimonial.preview && (
+                  <img
+                    src={newTestimonial.preview}
+                    alt="Preview"
+                    className="mt-2 w-20 h-20 object-cover rounded"
+                  />
+                )}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-green-500 text-white rounded flex items-center gap-2 hover:bg-green-600 disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                  {isSubmitting ? "Saving..." : "Save"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsAdding(false)}
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Search & Filter */}
       <div className="flex flex-wrap gap-4 mb-4">
@@ -295,7 +437,9 @@ export default function Testimonials() {
                         </button>
 
                         <button
-                          onClick={() => deleteTestimonial(id)}
+                          onClick={() =>
+                            setDeleteModal({ show: true, testimonial: t })
+                          }
                           disabled={actionLoading[id]}
                           className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer disabled:opacity-50 flex items-center gap-1"
                         >
@@ -342,6 +486,115 @@ export default function Testimonials() {
             </button>
           </div>
         </>
+      )}
+
+      {/* Error Modal */}
+      {errorModal.show && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md">
+            <h3 className="text-lg font-bold mb-2">Error</h3>
+            <p className="mb-4">{errorModal.message}</p>
+            <button
+              onClick={() => setErrorModal({ show: false, message: "" })}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteModal.show && deleteModal.testimonial && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md">
+            <h3 className="text-lg font-bold mb-2">Confirm Delete</h3>
+            <p className="mb-4">
+              Are you sure you want to delete the testimonial from{" "}
+              <span className="font-semibold">
+                {deleteModal.testimonial.name}
+              </span>
+              ? This action cannot be undone.
+            </p>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() =>
+                  setDeleteModal({ show: false, testimonial: null })
+                }
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() =>
+                  deleteTestimonial(getId(deleteModal.testimonial))
+                }
+                disabled={actionLoading[getId(deleteModal.testimonial)]}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 flex items-center gap-2"
+              >
+                {actionLoading[getId(deleteModal.testimonial)] ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Testimonial Modal */}
+      {selectedTestimonial && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-xl font-bold">Testimonial Details</h3>
+              <button
+                onClick={() => setSelectedTestimonial(null)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex items-center gap-3 mb-4">
+              <img
+                src={selectedTestimonial.image || placeholder}
+                alt={selectedTestimonial.name}
+                className="w-16 h-16 rounded-full object-cover"
+              />
+              <div>
+                <p className="font-semibold text-lg">
+                  {selectedTestimonial.name}
+                </p>
+                <p
+                  className={`text-sm font-semibold ${
+                    getStatus(selectedTestimonial) === "Pending"
+                      ? "text-yellow-600"
+                      : "text-green-600"
+                  }`}
+                >
+                  {getStatus(selectedTestimonial)}
+                </p>
+              </div>
+            </div>
+            <div className="mb-4">
+              <p className="font-semibold mb-2">Message:</p>
+              <p className="text-gray-700">{selectedTestimonial.message}</p>
+            </div>
+            <button
+              onClick={() => setSelectedTestimonial(null)}
+              className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 w-full"
+            >
+              Close
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

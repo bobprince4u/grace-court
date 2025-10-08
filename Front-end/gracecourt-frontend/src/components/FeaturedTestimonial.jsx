@@ -151,7 +151,7 @@ const useTestimonials = (apiEndpoint, onError, maxRetries = 3) => {
 const FeaturedTestimonial = ({
   itemsPerPage = 3,
   autoplayInterval = 5000,
-  apiEndpoint = "http://localhost:5000/api/testimonials",
+  apiEndpoint = `${import.meta.env.VITE_API_URL}/api/testimonials`,
   className = "",
   onError,
   maxRetries = 3,

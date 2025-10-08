@@ -141,7 +141,11 @@ const Hero = ({
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/api/properties/search?location=${form.location}&checkIn=${form.checkIn}&checkOut=${form.checkOut}&guests=${form.guests}`
+        `${import.meta.env.VITE_API_URL}/api/properties/search?location=${
+          form.location
+        }&checkIn=${form.checkIn}&checkOut=${form.checkOut}&guests=${
+          form.guests
+        }`
       );
       const data = await res.json();
 
