@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import heroImg from "../assets/background-img.png";
+import heroImg from "../assets/background-img-transformed.png";
 
 const TermsAndConditions = () => {
   const [activeId, setActiveId] = useState("about-1");

@@ -74,7 +74,7 @@ const HeroSkeleton = () => (
 );
 
 const Hero = ({
-  backgroundImage = "/src/assets/background-img.webp",
+  backgroundImage = "/src/assets/background-img-transformed.png",
   title = "Premium Accommodation",
   subtitle = "Short, Mid & Longlets. At Gracecourt, we offer luxury short-let apartments designed for style, comfort, and convenience. Whether it's a weekend escape or an extended stay, enjoy upscale amenities, spacious interiors, and prime locations. Discover why smart travellers choose Gracecourt, your home away from home.",
   onSearch,
